@@ -20,6 +20,7 @@ internal partial class EndpointHtmlRenderer
     private TextWriter? _streamingUpdatesWriter;
     private HashSet<int>? _visitedComponentIdsInCurrentStreamingBatch;
     private string? _ssrFramingCommentMarkup;
+    private bool _allowBoundaryMarkers;
 
     public void InitializeStreamingRenderingFraming(HttpContext httpContext)
     {
@@ -190,7 +191,7 @@ internal partial class EndpointHtmlRenderer
     {
         var componentId = componentFrame.ComponentId;
         var sequenceAndKey = new SequenceAndKey(componentFrame.Sequence, componentFrame.ComponentKey);
-        WriteComponentHtml(componentId, output, allowBoundaryMarkers: true, sequenceAndKey);
+        WriteComponentHtml(componentId, output, _allowBoundaryMarkers, sequenceAndKey);
     }
 
     private void WriteComponentHtml(int componentId, TextWriter output, bool allowBoundaryMarkers, SequenceAndKey sequenceAndKey = default)
