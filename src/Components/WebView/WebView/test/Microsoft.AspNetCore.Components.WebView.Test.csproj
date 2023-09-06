@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>$(DefaultNetCoreTargetFramework)</TargetFramework>
     <RootNamespace>Microsoft.AspNetCore.Components.WebView</RootNamespace>
+    <!-- Suppress CS8002 because Photino assemblies are not signed -->
+    <NoWarn>@(NoWarn);CS8002</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
