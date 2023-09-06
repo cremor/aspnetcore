@@ -16,6 +16,7 @@ class Program
     static void Main(string[] args)
     {
         var isTestMode = args.Contains("testmode", StringComparer.Ordinal);
+        Console.WriteLine($"Running in test mode? {isTestMode}");
 
         var hostPage = isTestMode ? "wwwroot/webviewtesthost.html" : "wwwroot/webviewhost.html";
 

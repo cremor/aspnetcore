@@ -98,11 +98,11 @@ public class BlazorWindow
                     {
                         _latestControlDivValue = msg.Substring(NewControlDivValueMessage.Length + 1);
                     }
-                    Debug.WriteLine(msg);
                 }
             });
         }
 
+        Console.WriteLine($"Navigating to: {_pathBase}");
         _manager.Navigate(_pathBase);
 
         var testPassed = false;
@@ -116,20 +116,20 @@ public class BlazorWindow
                     try
                     {
                         // 1. Wait for WebView ready
-                        Debug.WriteLine($"Waiting for WebView ready...");
+                        Console.WriteLine($"Waiting for WebView ready...");
                         var isWebViewReadyRetriesLeft = 5;
                         while (!isWebViewReady)
                         {
-                            Debug.WriteLine($"WebView not ready yet, waiting 1sec...");
+                            Console.WriteLine($"WebView not ready yet, waiting 1sec...");
                             await Task.Delay(1000);
                             isWebViewReadyRetriesLeft--;
                             if (isWebViewReadyRetriesLeft == 0)
                             {
-                                Debug.WriteLine($"WebView never became ready, failing the test...");
+                                Console.WriteLine($"WebView never became ready, failing the test...");
                                 return;
                             }
                         }
-                        Debug.WriteLine($"WebView is ready!");
+                        Console.WriteLine($"WebView is ready!");
 
                         // 2. Check TestPage starting state
                         if (!await WaitForControlDiv(controlValueToWaitFor: "0"))
@@ -147,8 +147,14 @@ public class BlazorWindow
                         }
 
                         // 5. If we get here, it all worked!
-                        Debug.WriteLine($"All tests passed!");
+                        Console.WriteLine($"All tests passed!");
                         testPassed = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("EXCEPTION DURING TEST: " + ex.Message);
+                        Console.WriteLine(ex.StackTrace);
+                        throw;
                     }
                     finally
                     {
@@ -159,6 +165,7 @@ public class BlazorWindow
         }
 
         // This line actually starts Photino and makes the window appear
+        Console.WriteLine($"Starting Photino window...");
         _window.WaitForClose();
 
         if (isTestMode)
@@ -178,20 +185,20 @@ public class BlazorWindow
             // Tell WebView to report the current controlDiv value (this is inside the loop because
             // it's possible for this to execute before the WebView has finished processing previous
             // C#-generated events, such as WebView button clicks).
-            Debug.WriteLine($"Asking WebView for current controlDiv value...");
+            Console.WriteLine($"Asking WebView for current controlDiv value...");
             _window.SendWebMessage($"wvt:GetControlDivValue");
 
             // And wait for the value to appear
             if (_latestControlDivValue == controlValueToWaitFor)
             {
-                Debug.WriteLine($"WebView reported the expected controlDiv value of {controlValueToWaitFor}!");
+                Console.WriteLine($"WebView reported the expected controlDiv value of {controlValueToWaitFor}!");
                 return true;
             }
-            Debug.WriteLine($"Waiting for controlDiv to have value '{controlValueToWaitFor}', but it's still '{_latestControlDivValue}', so waiting {WaitTimeInMS}ms.");
+            Console.WriteLine($"Waiting for controlDiv to have value '{controlValueToWaitFor}', but it's still '{_latestControlDivValue}', so waiting {WaitTimeInMS}ms.");
             await Task.Delay(WaitTimeInMS);
         }
 
-        Debug.WriteLine($"Waited {MaxWaitTimes * WaitTimeInMS}ms but couldn't get controlDiv to have value '{controlValueToWaitFor}' (last value is '{_latestControlDivValue}').");
+        Console.WriteLine($"Waited {MaxWaitTimes * WaitTimeInMS}ms but couldn't get controlDiv to have value '{controlValueToWaitFor}' (last value is '{_latestControlDivValue}').");
         return false;
     }
 

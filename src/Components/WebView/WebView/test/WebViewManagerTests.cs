@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using Microsoft.AspNetCore.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using PhotinoTestApp;
 
@@ -10,6 +11,7 @@ namespace Microsoft.AspNetCore.Components.WebView;
 public class WebViewManagerTests
 {
     [Fact]
+    //[OSSkipCondition(OperatingSystems.Linux | OperatingSystems.MacOSX)]
     public async Task CanLaunchPhotinoWebViewAndClickButton()
     {
         var photinoTestProgramExePath = typeof(PhotinoMarkerType).Assembly.Location;
@@ -18,6 +20,7 @@ public class WebViewManagerTests
         {
             StartInfo = new ProcessStartInfo
             {
+                WorkingDirectory = Path.GetDirectoryName(photinoTestProgramExePath),
                 FileName = "dotnet",
                 Arguments = $"\"{photinoTestProgramExePath}\" testmode",
                 RedirectStandardOutput = true,
@@ -28,9 +31,9 @@ public class WebViewManagerTests
 
         var testProgramOutput = photinoProcess.StandardOutput.ReadToEnd();
 
-        await photinoProcess.WaitForExitAsync();
+        await photinoProcess.WaitForExitAsync().TimeoutAfter(TimeSpan.FromSeconds(30));
 
-        Assert.Contains($"Test passed? {true}", testProgramOutput);
+        Assert.Contains($"Test passeds? {true}", testProgramOutput);
     }
 
     [Fact]
