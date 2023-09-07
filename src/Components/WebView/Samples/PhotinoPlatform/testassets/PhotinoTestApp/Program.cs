@@ -25,9 +25,10 @@ class Program
         serviceCollection.AddSingleton<HttpClient>();
 
         Console.WriteLine($"Creating BlazorWindow...");
+        BlazorWindow mainWindow = null;
         try
         {
-            var mainWindow = new BlazorWindow(
+            mainWindow = new BlazorWindow(
                 title: "Hello, world!",
                 hostPage: hostPage,
                 services: serviceCollection.BuildServiceProvider(),
