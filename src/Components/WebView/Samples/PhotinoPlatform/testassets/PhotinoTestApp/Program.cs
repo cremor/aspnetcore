@@ -20,6 +20,8 @@ class Program
 
         if (isTestMode)
         {
+            Console.WriteLine($"Current directory: {Environment.CurrentDirectory}");
+            Console.WriteLine($"Current assembly: {typeof(Program).Assembly.Location}");
             var thisProgramDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             var thisProgramFiles = Directory.GetFiles(thisProgramDir, "*", SearchOption.AllDirectories);
             Console.WriteLine($"Found {thisProgramFiles.Length} files in this app:");
