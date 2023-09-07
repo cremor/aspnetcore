@@ -18,6 +18,17 @@ class Program
         var isTestMode = args.Contains("testmode", StringComparer.Ordinal);
         Console.WriteLine($"Running in test mode? {isTestMode}");
 
+        if (isTestMode)
+        {
+            var thisProgramDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            var thisProgramFiles = Directory.GetFiles(thisProgramDir, "*", SearchOption.AllDirectories);
+            Console.WriteLine($"Found {thisProgramFiles.Length} files in this app:");
+            foreach (var file in thisProgramFiles)
+            {
+                Console.WriteLine($"\t{file}");
+            }
+        }
+
         var hostPage = isTestMode ? "wwwroot/webviewtesthost.html" : "wwwroot/webviewhost.html";
 
         var serviceCollection = new ServiceCollection();
