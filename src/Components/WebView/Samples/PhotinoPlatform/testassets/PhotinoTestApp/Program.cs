@@ -24,12 +24,14 @@ class Program
         serviceCollection.AddBlazorWebView();
         serviceCollection.AddSingleton<HttpClient>();
 
+        Console.WriteLine($"Creating BlazorWindow...");
         var mainWindow = new BlazorWindow(
             title: "Hello, world!",
             hostPage: hostPage,
             services: serviceCollection.BuildServiceProvider(),
             pathBase: "/subdir"); // The content in BasicTestApp assumes this
 
+        Console.WriteLine($"Hooking exception handler...");
         AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
         {
             Console.Write(
@@ -37,6 +39,7 @@ class Program
                 error.ExceptionObject.ToString() + Environment.NewLine);
         };
 
+        Console.WriteLine($"Setting up root components...");
         if (isTestMode)
         {
             mainWindow.RootComponents.Add<Pages.TestPage>("root");
@@ -50,6 +53,16 @@ class Program
                 javaScriptInitializer: "myJsRootComponentInitializers.testInitializer");
         }
 
-        mainWindow.Run(isTestMode);
+        Console.WriteLine($"Running window...");
+
+        try
+        {
+            mainWindow.Run(isTestMode);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception while running window: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+        }
     }
 }

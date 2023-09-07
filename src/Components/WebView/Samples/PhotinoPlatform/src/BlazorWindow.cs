@@ -86,6 +86,7 @@ public class BlazorWindow
 
         if (isTestMode)
         {
+            Console.WriteLine($"RegisterWebMessageReceivedHandler...");
             _window.RegisterWebMessageReceivedHandler((s, msg) =>
             {
                 if (!msg.StartsWith("__bwv:", StringComparison.Ordinal))
