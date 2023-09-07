@@ -25,11 +25,19 @@ class Program
         serviceCollection.AddSingleton<HttpClient>();
 
         Console.WriteLine($"Creating BlazorWindow...");
-        var mainWindow = new BlazorWindow(
-            title: "Hello, world!",
-            hostPage: hostPage,
-            services: serviceCollection.BuildServiceProvider(),
-            pathBase: "/subdir"); // The content in BasicTestApp assumes this
+        try
+        {
+            var mainWindow = new BlazorWindow(
+                title: "Hello, world!",
+                hostPage: hostPage,
+                services: serviceCollection.BuildServiceProvider(),
+                pathBase: "/subdir"); // The content in BasicTestApp assumes this
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception while creating window: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+        }
 
         Console.WriteLine($"Hooking exception handler...");
         AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
