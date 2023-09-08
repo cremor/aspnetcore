@@ -5,6 +5,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView.Photino;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace PhotinoTestApp;
 
@@ -46,6 +47,20 @@ class Program
         BlazorWindow mainWindow = null;
         try
         {
+            var contentRootDir = Path.GetDirectoryName(Path.GetFullPath(hostPage))!;
+            Console.WriteLine($"contentRootDir = {contentRootDir}, exists = {Directory.Exists(contentRootDir)}, rooted = {Path.IsPathRooted(contentRootDir)}");
+            var hostPageRelativePath = Path.GetRelativePath(contentRootDir, hostPage);
+            Console.WriteLine($"hostPageRelativePath = {hostPageRelativePath}, exists = {File.Exists(Path.Combine(contentRootDir, hostPageRelativePath))}");
+            var fileProvider = new PhysicalFileProvider(contentRootDir);
+
+            string fullRoot = Path.GetFullPath(contentRootDir);
+            // When we do matches in GetFullPath, we want to only match full directory names.
+            var root2 = EnsureTrailingSlash(fullRoot);
+            if (!Directory.Exists(root2))
+            {
+                throw new DirectoryNotFoundException(root2);
+            }
+
             mainWindow = new BlazorWindow(
                 title: "Hello, world!",
                 hostPage: hostPage,
@@ -54,7 +69,7 @@ class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception while creating window: {ex.Message}");
+            Console.WriteLine($"Exception {ex.GetType().FullName} while creating window: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
 
@@ -91,5 +106,16 @@ class Program
             Console.WriteLine($"Exception while running window: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
+    }
+
+    internal static string EnsureTrailingSlash(string path)
+    {
+        if (!string.IsNullOrEmpty(path) &&
+            path[path.Length - 1] != Path.DirectorySeparatorChar)
+        {
+            return path + Path.DirectorySeparatorChar;
+        }
+
+        return path;
     }
 }
