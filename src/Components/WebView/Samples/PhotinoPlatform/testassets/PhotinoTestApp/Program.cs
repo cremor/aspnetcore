@@ -23,9 +23,14 @@ class Program
             Console.WriteLine($"Current directory: {Environment.CurrentDirectory}");
             Console.WriteLine($"Current assembly: {typeof(Program).Assembly.Location}");
             var thisProgramDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-            var thisProgramFiles = Directory.GetFiles(thisProgramDir, "*", SearchOption.AllDirectories);
-            Console.WriteLine($"Found {thisProgramFiles.Length} files in this app:");
-            foreach (var file in thisProgramFiles)
+
+            Console.WriteLine($"Old PATH: {Environment.GetEnvironmentVariable("PATH")}");
+            Environment.SetEnvironmentVariable("PATH", Path.Combine(thisProgramDir, "runtimes", "win-x64", "native") + ";" + Environment.GetEnvironmentVariable("PATH"));
+            Console.WriteLine($"New PATH: {Environment.GetEnvironmentVariable("PATH")}");
+
+            var thisRuntimeProgramFiles = Directory.GetFiles(thisProgramDir, "*", SearchOption.AllDirectories).Where(f => f.Contains("\\runtimes\\", StringComparison.OrdinalIgnoreCase)).ToArray();
+            Console.WriteLine($"Found {thisRuntimeProgramFiles.Length} files in this app:");
+            foreach (var file in thisRuntimeProgramFiles)
             {
                 Console.WriteLine($"\t{file}");
             }
