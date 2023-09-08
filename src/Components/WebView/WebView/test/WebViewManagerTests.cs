@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using PhotinoTestApp;
 
 namespace Microsoft.AspNetCore.Components.WebView;
 
@@ -14,7 +13,7 @@ public class WebViewManagerTests
     //[OSSkipCondition(OperatingSystems.Linux | OperatingSystems.MacOSX)]
     public async Task CanLaunchPhotinoWebViewAndClickButton()
     {
-        var photinoTestProgramExePath = typeof(PhotinoMarkerType).Assembly.Location;
+        var photinoTestProgramExePath = typeof(WebViewManagerTests).Assembly.Location;
 
         var photinoProcess = new Process()
         {
@@ -22,7 +21,7 @@ public class WebViewManagerTests
             {
                 WorkingDirectory = Path.GetDirectoryName(photinoTestProgramExePath),
                 FileName = "dotnet",
-                Arguments = $"\"{photinoTestProgramExePath}\" testmode",
+                Arguments = $"\"{photinoTestProgramExePath}\"",
                 RedirectStandardOutput = true,
             },
         };

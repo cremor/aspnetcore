@@ -79,7 +79,7 @@ public class BlazorWindow
     /// <summary>
     /// Shows the window and waits for it to be closed.
     /// </summary>
-    public void Run(bool isTestMode)
+    public void Run(bool isTestMode = false)
     {
         const string NewControlDivValueMessage = "wvt:NewControlDivValue";
         var isWebViewReady = false;
