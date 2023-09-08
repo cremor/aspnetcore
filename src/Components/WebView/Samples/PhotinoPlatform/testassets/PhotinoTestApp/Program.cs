@@ -29,9 +29,9 @@ class Program
             Environment.SetEnvironmentVariable("PATH", Path.Combine(thisProgramDir, "runtimes", "win-x64", "native") + ";" + Environment.GetEnvironmentVariable("PATH"));
             Console.WriteLine($"New PATH: {Environment.GetEnvironmentVariable("PATH")}");
 
-            var thisRuntimeProgramFiles = Directory.GetFiles(thisProgramDir, "*", SearchOption.AllDirectories).Where(f => f.Contains("\\runtimes\\", StringComparison.OrdinalIgnoreCase)).ToArray();
-            Console.WriteLine($"Found {thisRuntimeProgramFiles.Length} files in this app:");
-            foreach (var file in thisRuntimeProgramFiles)
+            var thisAppFiles = Directory.GetFiles(thisProgramDir, "*", SearchOption.AllDirectories).ToArray();
+            Console.WriteLine($"Found {thisAppFiles.Length} files in this app:");
+            foreach (var file in thisAppFiles)
             {
                 Console.WriteLine($"\t{file}");
             }
